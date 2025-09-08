@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function AdminQuestions() {
   const [activeTab, setActiveTab] = useState("mcq");
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const { toast } = useToast();
 
 
@@ -42,6 +43,15 @@ export default function AdminQuestions() {
       });
     },
   });
+
+  const handleEditQuestion = (question: Question) => {
+    setEditingQuestion(question);
+    setActiveTab(question.type);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingQuestion(null);
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -73,7 +83,9 @@ export default function AdminQuestions() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Create New Question</CardTitle>
+          <CardTitle>
+            {editingQuestion ? "Edit Question" : "Create New Question"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -84,15 +96,24 @@ export default function AdminQuestions() {
             </TabsList>
             
             <TabsContent value="mcq" className="mt-6">
-              <MCQForm />
+              <MCQForm 
+                editingQuestion={editingQuestion?.type === "mcq" ? editingQuestion : null}
+                onCancel={handleCancelEdit}
+              />
             </TabsContent>
             
             <TabsContent value="coding" className="mt-6">
-              <CodingForm />
+              <CodingForm 
+                editingQuestion={editingQuestion?.type === "coding" ? editingQuestion : null}
+                onCancel={handleCancelEdit}
+              />
             </TabsContent>
             
             <TabsContent value="ctf" className="mt-6">
-              <CTFForm />
+              <CTFForm 
+                editingQuestion={editingQuestion?.type === "ctf" ? editingQuestion : null}
+                onCancel={handleCancelEdit}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -132,6 +153,7 @@ export default function AdminQuestions() {
                       size="sm"
                       data-testid={`button-edit-question-${question.id}`}
                       className="text-secondary hover:text-secondary/80"
+                      onClick={() => handleEditQuestion(question)}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>

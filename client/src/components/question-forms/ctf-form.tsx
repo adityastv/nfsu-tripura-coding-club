@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import { auth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Plus, X } from "lucide-react";
+import type { Question, CTFQuestion } from "@shared/schema";
 
 const ctfFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -24,25 +25,55 @@ const ctfFormSchema = z.object({
 
 type CTFFormData = z.infer<typeof ctfFormSchema>;
 
-export default function CTFForm() {
+interface CTFFormProps {
+  editingQuestion?: CTFQuestion | null;
+  onCancel?: () => void;
+}
+
+export default function CTFForm({ editingQuestion, onCancel }: CTFFormProps) {
   const user = auth.getUser();
   const { toast } = useToast();
-  const [hints, setHints] = useState<string[]>([""]);
+  const [hints, setHints] = useState<string[]>(editingQuestion?.hints || [""]);
 
   const form = useForm<CTFFormData>({
     resolver: zodResolver(ctfFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      flag: "",
-      difficulty: "Easy",
-      points: 75,
+      title: editingQuestion?.title || "",
+      description: editingQuestion?.description || "",
+      flag: editingQuestion?.flag || "",
+      difficulty: editingQuestion?.difficulty || "Easy",
+      points: editingQuestion?.points || 75,
     },
   });
 
+  // Update form when editing question changes
+  useEffect(() => {
+    if (editingQuestion) {
+      form.reset({
+        title: editingQuestion.title,
+        description: editingQuestion.description,
+        flag: editingQuestion.flag,
+        difficulty: editingQuestion.difficulty,
+        points: editingQuestion.points,
+      });
+      setHints(editingQuestion.hints || [""]);
+    } else {
+      form.reset({
+        title: "",
+        description: "",
+        flag: "",
+        difficulty: "Easy",
+        points: 75,
+      });
+      setHints([""]);
+    }
+  }, [editingQuestion, form]);
+
   const createQuestionMutation = useMutation({
     mutationFn: async (questionData: any) => {
-      const response = await apiRequest("POST", "/api/questions", questionData);
+      const method = editingQuestion ? "PUT" : "POST";
+      const url = editingQuestion ? `/api/questions/${editingQuestion.id}` : "/api/questions";
+      const response = await apiRequest(method, url, questionData);
       return response.json();
     },
     onSuccess: () => {
@@ -50,15 +81,20 @@ export default function CTFForm() {
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       form.reset();
       setHints([""]);
+      if (onCancel) onCancel();
       toast({
         title: "Success",
-        description: "CTF challenge created successfully",
+        description: editingQuestion 
+          ? "CTF challenge updated successfully" 
+          : "CTF challenge created successfully",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create challenge",
+        description: editingQuestion 
+          ? "Failed to update challenge" 
+          : "Failed to create challenge",
         variant: "destructive",
       });
     },
@@ -94,6 +130,7 @@ export default function CTFForm() {
       difficulty: data.difficulty,
       points: data.points,
       createdBy: user.id,
+      updatedBy: user.id,
     };
 
     createQuestionMutation.mutate(questionData);
@@ -251,7 +288,10 @@ export default function CTFForm() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={createQuestionMutation.isPending}
           >
-            {createQuestionMutation.isPending ? "Creating..." : "Create Challenge"}
+            {createQuestionMutation.isPending 
+              ? (editingQuestion ? "Updating..." : "Creating...") 
+              : (editingQuestion ? "Update Challenge" : "Create Challenge")
+            }
           </Button>
           <Button
             type="button"
@@ -260,6 +300,7 @@ export default function CTFForm() {
             onClick={() => {
               form.reset();
               setHints([""]);
+              if (onCancel) onCancel();
             }}
           >
             Cancel
