@@ -201,16 +201,25 @@ export class MemStorage implements IStorage {
     };
     this.submissions.set(id, submission);
     
-    // Update user points if correct
+    // Update user points only if this is the first correct submission for that question
     if (submission.isCorrect) {
       const user = this.users.get(submission.userId);
       if (user) {
-        const updatedUser = {
-          ...user,
-          points: user.points + submission.points,
-          problemsSolved: user.problemsSolved + 1
-        };
-        this.users.set(submission.userId, updatedUser);
+        const previousCorrectSubmission = Array.from(this.submissions.values()).find(
+          sub => sub.userId === submission.userId &&
+                 sub.questionId === submission.questionId &&
+                 sub.isCorrect &&
+                 sub.id !== submission.id
+        );
+
+        if (!previousCorrectSubmission) {
+          const updatedUser = {
+            ...user,
+            points: user.points + submission.points,
+            problemsSolved: user.problemsSolved + 1
+          };
+          this.users.set(submission.userId, updatedUser);
+        }
       }
     }
     
