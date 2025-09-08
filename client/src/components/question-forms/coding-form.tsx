@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { auth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { Question, CodingQuestion } from "@shared/schema";
 
 const codingFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -28,44 +29,87 @@ const codingFormSchema = z.object({
 
 type CodingFormData = z.infer<typeof codingFormSchema>;
 
-export default function CodingForm() {
+interface CodingFormProps {
+  editingQuestion?: CodingQuestion | null;
+  onCancel?: () => void;
+}
+
+export default function CodingForm({ editingQuestion, onCancel }: CodingFormProps) {
   const user = auth.getUser();
   const { toast } = useToast();
 
   const form = useForm<CodingFormData>({
     resolver: zodResolver(codingFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      inputFormat: "",
-      outputFormat: "",
-      sampleInput: "",
-      sampleOutput: "",
-      difficulty: "Easy",
-      points: 100,
-      timeLimit: 1000,
-      memoryLimit: 256,
+      title: editingQuestion?.title || "",
+      description: editingQuestion?.description || "",
+      inputFormat: editingQuestion?.inputFormat || "",
+      outputFormat: editingQuestion?.outputFormat || "",
+      sampleInput: editingQuestion?.sampleInput || "",
+      sampleOutput: editingQuestion?.sampleOutput || "",
+      difficulty: editingQuestion?.difficulty || "Easy",
+      points: editingQuestion?.points || 100,
+      timeLimit: editingQuestion?.timeLimit || 1000,
+      memoryLimit: editingQuestion?.memoryLimit || 256,
     },
   });
 
+  // Update form when editing question changes
+  useEffect(() => {
+    if (editingQuestion) {
+      form.reset({
+        title: editingQuestion.title,
+        description: editingQuestion.description,
+        inputFormat: editingQuestion.inputFormat,
+        outputFormat: editingQuestion.outputFormat,
+        sampleInput: editingQuestion.sampleInput,
+        sampleOutput: editingQuestion.sampleOutput,
+        difficulty: editingQuestion.difficulty,
+        points: editingQuestion.points,
+        timeLimit: editingQuestion.timeLimit,
+        memoryLimit: editingQuestion.memoryLimit,
+      });
+    } else {
+      form.reset({
+        title: "",
+        description: "",
+        inputFormat: "",
+        outputFormat: "",
+        sampleInput: "",
+        sampleOutput: "",
+        difficulty: "Easy",
+        points: 100,
+        timeLimit: 1000,
+        memoryLimit: 256,
+      });
+    }
+  }, [editingQuestion, form]);
+
   const createQuestionMutation = useMutation({
     mutationFn: async (questionData: any) => {
-      const response = await apiRequest("POST", "/api/questions", questionData);
+      const method = editingQuestion ? "PUT" : "POST";
+      const url = editingQuestion ? `/api/questions/${editingQuestion.id}` : "/api/questions";
+      const response = await apiRequest(method, url, questionData);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       form.reset();
+      if (onCancel) onCancel();
       toast({
         title: "Success",
-        description: "Coding question created successfully",
+        description: editingQuestion 
+          ? "Coding question updated successfully" 
+          : "Coding question created successfully",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create question",
+        description: editingQuestion 
+          ? "Failed to update question" 
+          : "Failed to create question",
         variant: "destructive",
       });
     },
@@ -87,6 +131,7 @@ export default function CodingForm() {
       timeLimit: data.timeLimit,
       memoryLimit: data.memoryLimit,
       createdBy: user.id,
+      updatedBy: user.id,
     };
 
     createQuestionMutation.mutate(questionData);
@@ -309,13 +354,19 @@ export default function CodingForm() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={createQuestionMutation.isPending}
           >
-            {createQuestionMutation.isPending ? "Creating..." : "Create Question"}
+            {createQuestionMutation.isPending 
+              ? (editingQuestion ? "Updating..." : "Creating...") 
+              : (editingQuestion ? "Update Question" : "Create Question")
+            }
           </Button>
           <Button
             type="button"
             variant="outline"
             data-testid="button-cancel-coding"
-            onClick={() => form.reset()}
+            onClick={() => {
+              form.reset();
+              if (onCancel) onCancel();
+            }}
           >
             Cancel
           </Button>

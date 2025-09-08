@@ -118,6 +118,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/questions/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const existingQuestion = await storage.getQuestion(id);
+      
+      if (!existingQuestion) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+      
+      const updatedQuestion = await storage.updateQuestion(id, req.body);
+      if (updatedQuestion) {
+        await storage.addActivity({
+          userId: req.body.updatedBy || "system",
+          userName: "Admin",
+          action: `Updated question: ${updatedQuestion.title}`,
+          timestamp: new Date()
+        });
+        res.json(updatedQuestion);
+      } else {
+        res.status(500).json({ message: "Failed to update question" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update question" });
+    }
+  });
+
   app.delete("/api/questions/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -131,7 +157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (deleted) {
         await storage.addActivity({
           userId: req.body.deletedBy || "system",
-          userName: "Admin", 
+          userName: "Admin",
           action: `Deleted question: ${question.title}`,
           timestamp: new Date()
         });
