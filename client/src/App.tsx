@@ -60,7 +60,7 @@ function AuthenticatedApp() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="nfsu-coding-club-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="nfsu-coding-club-theme">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />

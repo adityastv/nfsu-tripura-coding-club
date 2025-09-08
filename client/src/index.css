@@ -4,46 +4,6 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(248 249 250);
-  --foreground: hsl(44 62 80);
-  --card: hsl(255 255 255);
-  --card-foreground: hsl(44 62 80);
-  --popover: hsl(255 255 255);
-  --popover-foreground: hsl(44 62 80);
-  --primary: hsl(15 100% 59%);
-  --primary-foreground: hsl(255 255 255);
-  --secondary: hsl(208 100% 30%);
-  --secondary-foreground: hsl(255 255 255);
-  --muted: hsl(241 245 249);
-  --muted-foreground: hsl(100 116 139);
-  --accent: hsl(32 100% 55%);
-  --accent-foreground: hsl(255 255 255);
-  --destructive: hsl(0 84% 60%);
-  --destructive-foreground: hsl(255 255 255);
-  --border: hsl(226 232 240);
-  --input: hsl(226 232 240);
-  --ring: hsl(15 100% 59%);
-  --success: hsl(134 61% 41%);
-  --success-foreground: hsl(255 255 255);
-  --chart-1: hsl(15 100% 59%);
-  --chart-2: hsl(134 61% 41%);
-  --chart-3: hsl(32 100% 55%);
-  --chart-4: hsl(208 100% 30%);
-  --chart-5: hsl(341 75% 51%);
-  --sidebar: hsl(255 255 255);
-  --sidebar-foreground: hsl(44 62 80);
-  --sidebar-primary: hsl(15 100% 59%);
-  --sidebar-primary-foreground: hsl(255 255 255);
-  --sidebar-accent: hsl(241 245 249);
-  --sidebar-accent-foreground: hsl(15 100% 59%);
-  --sidebar-border: hsl(226 232 240);
-  --sidebar-ring: hsl(15 100% 59%);
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --radius: 8px;
-}
-
-.dark {
   --background: hsl(0 0% 0%);
   --foreground: hsl(210 40% 98%);
   --card: hsl(222 84% 5%);
@@ -65,6 +25,11 @@
   --ring: hsl(15 100% 59%);
   --success: hsl(134 61% 41%);
   --success-foreground: hsl(255 255 255);
+  --chart-1: hsl(15 100% 59%);
+  --chart-2: hsl(134 61% 41%);
+  --chart-3: hsl(32 100% 55%);
+  --chart-4: hsl(208 100% 30%);
+  --chart-5: hsl(341 75% 51%);
   --sidebar: hsl(222 84% 5%);
   --sidebar-foreground: hsl(210 40% 98%);
   --sidebar-primary: hsl(15 100% 59%);
@@ -73,6 +38,9 @@
   --sidebar-accent-foreground: hsl(15 100% 59%);
   --sidebar-border: hsl(217 33% 17%);
   --sidebar-ring: hsl(15 100% 59%);
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 8px;
 }
 
 @layer base {
@@ -105,11 +73,6 @@
   
   .code-editor-background {
     font-family: var(--font-mono);
-    background: #1e1e1e;
-    color: #d4d4d4;
-  }
-  
-  .dark .code-editor-background {
     background: #0d1117;
     color: #e6edf3;
   }
