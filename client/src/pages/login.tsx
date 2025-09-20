@@ -85,7 +85,7 @@ export default function Login({ onLogin }: LoginProps) {
           <div className="text-center mb-6">
             <div className="indian-flag-accent mb-4"></div>
             <h1 className="text-2xl font-bold text-foreground">NFSU Tripura Coding Club</h1>
-            <p className="text-muted-foreground mt-2">Management Platform</p>
+            <p className="text-muted-foreground mt-2">CodeQuest : 22/09/2025 </p>
           </div>
           
           <div className="mb-6">
