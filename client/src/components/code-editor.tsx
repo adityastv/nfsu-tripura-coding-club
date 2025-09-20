@@ -145,6 +145,7 @@ export default function CodeEditor({ question }: CodeEditorProps) {
       language: selectedLanguage as "python" | "java" | "cpp" | "javascript",
       timeLimit: codingQ.timeLimit || 5000,
       memoryLimit: codingQ.memoryLimit || 256,
+      questionId: question.id, // Add questionId to inject sample input
     };
 
     runCodeMutation.mutate(executionRequest);
