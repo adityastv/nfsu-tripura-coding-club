@@ -131,6 +131,7 @@ export const codeExecutionRequestSchema = z.object({
   language: z.enum(["python", "java", "cpp", "javascript"]),
   timeLimit: z.number().min(100).max(10000).default(5000), // milliseconds
   memoryLimit: z.number().min(1).max(512).default(256), // MB
+  questionId: z.string().optional(), // Optional: if provided, will inject sample input
 });
 
 export const codeExecutionResultSchema = z.object({

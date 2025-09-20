@@ -106,7 +106,7 @@ export async function validateSubmission(
  * Injects input data into the code based on the programming language
  * This modifies the user code to use the provided input instead of reading from stdin
  */
-function injectInputToCode(code: string, input: string, language: string): string {
+export function injectInputToCode(code: string, input: string, language: string): string {
   const inputLines = input.split('\n');
   
   switch (language) {
@@ -187,7 +187,7 @@ int main() {
 /**
  * Extracts the main function body from C++ code
  */
-function extractMainBody(code: string): string {
+export function extractMainBody(code: string): string {
   // Simple regex to extract content between main() { and the last }
   const mainMatch = code.match(/int\s+main\s*\([^)]*\)\s*\{([\s\S]*)\}/);
   if (mainMatch && mainMatch[1]) {

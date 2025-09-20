@@ -318,7 +318,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/code/run", async (req, res) => {
     try {
       const executionRequest = codeExecutionRequestSchema.parse(req.body);
-      const result = await executeCode(executionRequest);
+      let codeToExecute = executionRequest.code;
+      
+      // If questionId is provided, inject sample input for testing
+      if (executionRequest.questionId) {
+        const question = await storage.getQuestion(executionRequest.questionId);
+        if (question && question.type === "coding") {
+          const { injectInputToCode } = await import("./test-runner");
+          codeToExecute = injectInputToCode(
+            executionRequest.code, 
+            question.sampleInput, 
+            executionRequest.language
+          );
+        }
+      }
+      
+      const result = await executeCode({
+        ...executionRequest,
+        code: codeToExecute
+      });
       res.json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
