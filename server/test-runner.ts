@@ -18,6 +18,18 @@ export interface ValidationResult {
 }
 
 /**
+ * Normalizes output for more robust comparison
+ * Handles common formatting issues like extra whitespace, case sensitivity for specific outputs
+ */
+function normalizeOutput(output: string): string {
+  return output
+    .trim()                    // Remove leading/trailing whitespace
+    .replace(/\s+/g, ' ')      // Replace multiple spaces with single space
+    .replace(/\s+$/gm, '')     // Remove trailing spaces from each line
+    .replace(/^\s+/gm, '');    // Remove leading spaces from each line
+}
+
+/**
  * Validates a code submission against all test cases for a coding question
  */
 export async function validateSubmission(
@@ -50,8 +62,8 @@ export async function validateSubmission(
 
       const result: CodeExecutionResult = await executeCode(executionRequest);
       
-      const actualOutput = result.stdout.trim();
-      const expectedOutput = testCase.expectedOutput.trim();
+      const actualOutput = normalizeOutput(result.stdout);
+      const expectedOutput = normalizeOutput(testCase.expectedOutput);
       const passed = result.success && actualOutput === expectedOutput;
       
       if (passed) {

@@ -177,6 +177,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       let submissionData = insertSubmissionSchema.parse(req.body);
       
+      // Set default values for auto-populated fields
+      submissionData.submittedAt = submissionData.submittedAt || new Date();
+      submissionData.isCorrect = submissionData.isCorrect || false;
+      submissionData.points = submissionData.points || 0;
+      
       // For coding questions, validate against test cases
       if (submissionData.questionType === "coding") {
         const question = await storage.getQuestion(submissionData.questionId);

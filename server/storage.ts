@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Question, type Submission, type InsertSubmission, type Activity } from "@shared/schema";
+import { type User, type InsertUser, type Question, type CodingQuestion, type MCQQuestion, type CTFQuestion, type Submission, type InsertSubmission, type Activity } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -144,88 +144,84 @@ export class MemStorage implements IStorage {
 
     await this.createQuestion({
       type: "coding",
-      title: "Two Sum Problem",
-      description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-      inputFormat: "First line contains n (array size). Second line contains n integers. Third line contains target.",
-      outputFormat: "Two space-separated integers representing the indices.",
-      sampleInput: "4\n2 7 11 15\n9",
-      sampleOutput: "0 1",
+      title: "Hello World",
+      description: "Write a program that prints 'Hello World' to the console.",
+      inputFormat: "No input required.",
+      outputFormat: "Print exactly: Hello World",
+      sampleInput: "",
+      sampleOutput: "Hello World",
       testCases: [
-        { input: "3\n3 2 4\n6", expectedOutput: "1 2", isHidden: true },
-        { input: "2\n3 3\n6", expectedOutput: "0 1", isHidden: true },
-        { input: "5\n1 2 3 4 5\n8", expectedOutput: "2 4", isHidden: true },
-        { input: "6\n-1 -2 -3 -4 -5 10\n-6", expectedOutput: "1 3", isHidden: true }
+        { input: "", expectedOutput: "Hello World", isHidden: true }
       ],
       difficulty: "Easy",
-      points: 50,
+      points: 10,
       timeLimit: 1000,
       memoryLimit: 256,
       createdBy: "aditya"
-    });
+    } as Omit<CodingQuestion, 'id' | 'createdAt'>);
 
     await this.createQuestion({
       type: "coding",
-      title: "Binary Search Implementation",
-      description: "Implement binary search algorithm to find target element in sorted array.",
-      inputFormat: "First line contains n (array size). Second line contains n sorted integers. Third line contains target.",
-      outputFormat: "Index of target element, or -1 if not found.",
-      sampleInput: "5\n1 3 5 7 9\n5",
-      sampleOutput: "2",
+      title: "Add Two Numbers",
+      description: "Read two integers and print their sum.",
+      inputFormat: "Two integers a and b separated by a space.",
+      outputFormat: "Print the sum of a and b.",
+      sampleInput: "3 5",
+      sampleOutput: "8",
       testCases: [
-        { input: "4\n1 2 3 4\n3", expectedOutput: "2", isHidden: true },
-        { input: "3\n10 20 30\n15", expectedOutput: "-1", isHidden: true },
-        { input: "6\n2 4 6 8 10 12\n10", expectedOutput: "4", isHidden: true },
-        { input: "1\n5\n5", expectedOutput: "0", isHidden: true }
+        { input: "10 20", expectedOutput: "30", isHidden: true },
+        { input: "0 0", expectedOutput: "0", isHidden: true },
+        { input: "1 2", expectedOutput: "3", isHidden: true },
+        { input: "100 200", expectedOutput: "300", isHidden: true }
       ],
-      difficulty: "Medium", 
-      points: 100,
-      timeLimit: 2000,
-      memoryLimit: 256,
-      createdBy: "aditya"
-    });
-
-    await this.createQuestion({
-      type: "coding",
-      title: "Reverse Linked List",
-      description: "Reverse a singly linked list and return the head of the reversed list.",
-      inputFormat: "First line contains n (number of nodes). Second line contains n integers representing the linked list values.",
-      outputFormat: "Print the values of the reversed linked list separated by spaces.",
-      sampleInput: "5\n1 2 3 4 5",
-      sampleOutput: "5 4 3 2 1",
-      testCases: [
-        { input: "3\n1 2 3", expectedOutput: "3 2 1", isHidden: true },
-        { input: "1\n42", expectedOutput: "42", isHidden: true },
-        { input: "4\n10 20 30 40", expectedOutput: "40 30 20 10", isHidden: true },
-        { input: "6\n1 1 2 3 5 8", expectedOutput: "8 5 3 2 1 1", isHidden: true }
-      ],
-      difficulty: "Medium",
-      points: 120,
-      timeLimit: 1500,
-      memoryLimit: 256,
-      createdBy: "aditya"
-    });
-
-    await this.createQuestion({
-      type: "coding",
-      title: "Fibonacci with Dynamic Programming",
-      description: "Calculate the nth Fibonacci number using dynamic programming approach to avoid redundant calculations.",
-      inputFormat: "A single integer n (0 ≤ n ≤ 40).",
-      outputFormat: "The nth Fibonacci number.",
-      sampleInput: "10",
-      sampleOutput: "55",
-      testCases: [
-        { input: "0", expectedOutput: "0", isHidden: true },
-        { input: "1", expectedOutput: "1", isHidden: true },
-        { input: "5", expectedOutput: "5", isHidden: true },
-        { input: "15", expectedOutput: "610", isHidden: true },
-        { input: "20", expectedOutput: "6765", isHidden: true }
-      ],
-      difficulty: "Hard",
-      points: 150,
+      difficulty: "Easy", 
+      points: 15,
       timeLimit: 1000,
       memoryLimit: 256,
       createdBy: "aditya"
-    });
+    } as Omit<CodingQuestion, 'id' | 'createdAt'>);
+
+    await this.createQuestion({
+      type: "coding",
+      title: "Even or Odd",
+      description: "Read an integer and determine if it is even or odd.",
+      inputFormat: "A single integer n.",
+      outputFormat: "Print 'Even' if the number is even, 'Odd' if it is odd.",
+      sampleInput: "4",
+      sampleOutput: "Even",
+      testCases: [
+        { input: "5", expectedOutput: "Odd", isHidden: true },
+        { input: "0", expectedOutput: "Even", isHidden: true },
+        { input: "1", expectedOutput: "Odd", isHidden: true },
+        { input: "100", expectedOutput: "Even", isHidden: true }
+      ],
+      difficulty: "Easy",
+      points: 20,
+      timeLimit: 1000,
+      memoryLimit: 256,
+      createdBy: "aditya"
+    } as Omit<CodingQuestion, 'id' | 'createdAt'>);
+
+    await this.createQuestion({
+      type: "coding",
+      title: "Maximum of Two Numbers",
+      description: "Read two integers and print the larger number.",
+      inputFormat: "Two integers a and b separated by a space.",
+      outputFormat: "Print the larger of the two numbers.",
+      sampleInput: "7 3",
+      sampleOutput: "7",
+      testCases: [
+        { input: "10 5", expectedOutput: "10", isHidden: true },
+        { input: "3 8", expectedOutput: "8", isHidden: true },
+        { input: "15 15", expectedOutput: "15", isHidden: true },
+        { input: "0 1", expectedOutput: "1", isHidden: true }
+      ],
+      difficulty: "Easy",
+      points: 25,
+      timeLimit: 1000,
+      memoryLimit: 256,
+      createdBy: "aditya"
+    } as Omit<CodingQuestion, 'id' | 'createdAt'>);
 
     await this.createQuestion({
       type: "ctf",
@@ -236,7 +232,7 @@ export class MemStorage implements IStorage {
       difficulty: "Easy",
       points: 75,
       createdBy: "aditya"
-    });
+    } as Omit<CTFQuestion, 'id' | 'createdAt'>);
 
     await this.createQuestion({
       type: "ctf",
@@ -247,7 +243,7 @@ export class MemStorage implements IStorage {
       difficulty: "Easy",
       points: 80,
       createdBy: "aditya"
-    });
+    } as Omit<CTFQuestion, 'id' | 'createdAt'>);
 
     await this.createQuestion({
       type: "ctf",
@@ -258,7 +254,7 @@ export class MemStorage implements IStorage {
       difficulty: "Medium",
       points: 100,
       createdBy: "aditya"
-    });
+    } as Omit<CTFQuestion, 'id' | 'createdAt'>);
   }
 
   // User operations
@@ -307,7 +303,7 @@ export class MemStorage implements IStorage {
       ...question,
       id,
       createdAt: new Date()
-    } as Question;
+    };
     this.questions.set(id, newQuestion);
     return newQuestion;
   }
