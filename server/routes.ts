@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertSubmissionSchema } from "@shared/schema";
+import { insertUserSchema, insertSubmissionSchema, codeExecutionRequestSchema } from "@shared/schema";
+import { executeCode } from "./code-executor";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -272,6 +273,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Code execution route
+  app.post("/api/code/run", async (req, res) => {
+    try {
+      const executionRequest = codeExecutionRequestSchema.parse(req.body);
+      const result = await executeCode(executionRequest);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          message: "Invalid code execution request", 
+          errors: error.errors 
+        });
+      } else {
+        console.error("Code execution error:", error);
+        res.status(500).json({ 
+          message: "Failed to execute code",
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
     }
   });
 

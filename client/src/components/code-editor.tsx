@@ -6,13 +6,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import CodeOutput from "@/components/code-output";
 import { auth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useCopyRestriction } from "@/hooks/use-copy-restriction";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getISTTime } from "@/lib/time";
 import { Play, Check, Send } from "lucide-react";
-import type { Question, MCQQuestion, CodingQuestion, CTFQuestion,InsertSubmission } from "@shared/schema";
+import type { Question, MCQQuestion, CodingQuestion, CTFQuestion, InsertSubmission, CodeExecutionRequest, CodeExecutionResult } from "@shared/schema";
 
 interface CodeEditorProps {
   question: Question;
@@ -55,7 +56,37 @@ export default function CodeEditor({ question }: CodeEditorProps) {
   const [mcqAnswer, setMcqAnswer] = useState("");
   const [ctfFlag, setCtfFlag] = useState("");
   const [isRunning, setIsRunning] = useState(false);
+  const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
 
+  const runCodeMutation = useMutation({
+    mutationFn: async (executionRequest: CodeExecutionRequest) => {
+      const response = await apiRequest("POST", "/api/code/run", executionRequest);
+      return response.json() as Promise<CodeExecutionResult>;
+    },
+    onSuccess: (result) => {
+      setExecutionResult(result);
+      if (result.success) {
+        toast({
+          title: "Code Executed Successfully",
+          description: `Execution completed in ${result.executionTime}ms`,
+        });
+      } else {
+        toast({
+          title: "Execution Failed",
+          description: result.error || "Check the error output below",
+          variant: "destructive",
+        });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Execution Error",
+        description: "Failed to execute code. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Code execution error:", error);
+    },
+  });
   const submitMutation = useMutation({
     mutationFn: async (submissionData: InsertSubmission) => {
       console.log("Submitting data:", submissionData);
@@ -96,15 +127,28 @@ export default function CodeEditor({ question }: CodeEditorProps) {
   };
 
   const handleRunCode = async () => {
-    setIsRunning(true);
-    // Simulate code execution
-    setTimeout(() => {
-      setIsRunning(false);
+    if (!code.trim()) {
       toast({
-        title: "Code Executed",
-        description: "Your code ran successfully. Check the output below.",
+        title: "No Code",
+        description: "Please write some code before running.",
+        variant: "destructive",
       });
-    }, 2000);
+      return;
+    }
+
+    setIsRunning(true);
+    setExecutionResult(null);
+
+    const codingQ = question as CodingQuestion;
+    const executionRequest: CodeExecutionRequest = {
+      code,
+      language: selectedLanguage as "python" | "java" | "cpp" | "javascript",
+      timeLimit: codingQ.timeLimit || 5000,
+      memoryLimit: codingQ.memoryLimit || 256,
+    };
+
+    runCodeMutation.mutate(executionRequest);
+    setIsRunning(false);
   };
 
   const handleSubmit = async () => {
@@ -291,10 +335,10 @@ export default function CodeEditor({ question }: CodeEditorProps) {
                 variant="outline"
                 data-testid="button-run-code"
                 onClick={handleRunCode}
-                disabled={isRunning}
+                disabled={runCodeMutation.isPending || !code.trim()}
               >
                 <Play className="mr-2 h-4 w-4" />
-                {isRunning ? "Running..." : "Run Code"}
+                {runCodeMutation.isPending ? "Running..." : "Run Code"}
               </Button>
               <Button
                 data-testid="button-submit-solution"
@@ -305,6 +349,14 @@ export default function CodeEditor({ question }: CodeEditorProps) {
                 <Check className="mr-2 h-4 w-4" />
                 {submitMutation.isPending ? "Submitting..." : "Submit"}
               </Button>
+            </div>
+
+            {/* Code Output Section */}
+            <div className="px-4 pb-4">
+              <CodeOutput 
+                result={executionResult} 
+                isLoading={runCodeMutation.isPending} 
+              />
             </div>
           </>
         )}
