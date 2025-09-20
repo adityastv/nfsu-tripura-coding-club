@@ -106,3 +106,24 @@ export const activitySchema = z.object({
 });
 
 export type Activity = z.infer<typeof activitySchema>;
+
+// Code execution types
+export const codeExecutionRequestSchema = z.object({
+  code: z.string().min(1, "Code cannot be empty"),
+  language: z.enum(["python", "java", "cpp", "javascript"]),
+  timeLimit: z.number().min(100).max(10000).default(5000), // milliseconds
+  memoryLimit: z.number().min(1).max(512).default(256), // MB
+});
+
+export const codeExecutionResultSchema = z.object({
+  success: z.boolean(),
+  stdout: z.string(),
+  stderr: z.string(),
+  exitCode: z.number(),
+  executionTime: z.number(), // milliseconds
+  memoryUsed: z.number().optional(), // MB
+  error: z.string().optional(),
+});
+
+export type CodeExecutionRequest = z.infer<typeof codeExecutionRequestSchema>;
+export type CodeExecutionResult = z.infer<typeof codeExecutionResultSchema>;
