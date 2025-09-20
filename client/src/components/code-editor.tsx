@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { auth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useCopyRestriction } from "@/hooks/use-copy-restriction";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getISTTime } from "@/lib/time";
 import { Play, Check, Send } from "lucide-react";
@@ -47,6 +48,7 @@ solution();`
 export default function CodeEditor({ question }: CodeEditorProps) {
   const user = auth.getUser();
   const { toast } = useToast();
+  const copyRestriction = useCopyRestriction();
   
   const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [code, setCode] = useState(LANGUAGE_TEMPLATES.python);
@@ -240,6 +242,7 @@ export default function CodeEditor({ question }: CodeEditorProps) {
               onChange={(e) => setCtfFlag(e.target.value)}
               placeholder="flag{...}"
               className="mt-2 font-mono"
+              {...copyRestriction}
             />
           </div>
         </div>
@@ -279,6 +282,7 @@ export default function CodeEditor({ question }: CodeEditorProps) {
                 placeholder="Write your code here..."
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
+                {...copyRestriction}
               />
             </div>
             
