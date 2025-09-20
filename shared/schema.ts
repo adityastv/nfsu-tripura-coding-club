@@ -100,7 +100,16 @@ export const submissionSchema = z.object({
   memoryUsed: z.number().optional(),
 });
 
-export const insertSubmissionSchema = submissionSchema.omit({ id: true });
+export const insertSubmissionSchema = submissionSchema.omit({ 
+  id: true, 
+  isCorrect: true, 
+  points: true, 
+  submittedAt: true 
+}).extend({
+  isCorrect: z.boolean().optional(),
+  points: z.number().optional(),
+  submittedAt: z.coerce.date().optional()
+});
 
 export type Submission = z.infer<typeof submissionSchema>;
 export type InsertSubmission = z.infer<typeof insertSubmissionSchema>;
