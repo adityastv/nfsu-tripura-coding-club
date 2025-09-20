@@ -79,6 +79,70 @@ export class MemStorage implements IStorage {
     });
 
     await this.createQuestion({
+      type: "mcq",
+      title: "Algorithm Complexity",
+      description: "What is the time complexity of binary search in a sorted array?",
+      options: {
+        a: "O(n)",
+        b: "O(log n)",
+        c: "O(n²)",
+        d: "O(1)"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 40,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Network Security",
+      description: "Which protocol provides secure communication over the internet?",
+      options: {
+        a: "HTTP",
+        b: "FTP",
+        c: "HTTPS",
+        d: "SMTP"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 35,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Database Concepts",
+      description: "Which of the following ensures data integrity in a database?",
+      options: {
+        a: "Primary Key",
+        b: "Foreign Key",
+        c: "Check Constraints",
+        d: "All of the above"
+      },
+      correctAnswer: "d",
+      difficulty: "Medium",
+      points: 45,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Cybersecurity Fundamentals",
+      description: "What is the primary purpose of a firewall in network security?",
+      options: {
+        a: "To encrypt data",
+        b: "To filter network traffic",
+        c: "To compress files",
+        d: "To backup data"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 30,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
       type: "coding",
       title: "Two Sum Problem",
       description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
@@ -109,6 +173,36 @@ export class MemStorage implements IStorage {
     });
 
     await this.createQuestion({
+      type: "coding",
+      title: "Reverse Linked List",
+      description: "Reverse a singly linked list and return the head of the reversed list.",
+      inputFormat: "First line contains n (number of nodes). Second line contains n integers representing the linked list values.",
+      outputFormat: "Print the values of the reversed linked list separated by spaces.",
+      sampleInput: "5\n1 2 3 4 5",
+      sampleOutput: "5 4 3 2 1",
+      difficulty: "Medium",
+      points: 120,
+      timeLimit: 1500,
+      memoryLimit: 256,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "coding",
+      title: "Fibonacci with Dynamic Programming",
+      description: "Calculate the nth Fibonacci number using dynamic programming approach to avoid redundant calculations.",
+      inputFormat: "A single integer n (0 ≤ n ≤ 40).",
+      outputFormat: "The nth Fibonacci number.",
+      sampleInput: "10",
+      sampleOutput: "55",
+      difficulty: "Hard",
+      points: 150,
+      timeLimit: 1000,
+      memoryLimit: 256,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
       type: "ctf",
       title: "Simple Caesar Cipher",
       description: "Decode the following Caesar cipher with shift 3: 'KDOOR ZRUOG'",
@@ -116,6 +210,28 @@ export class MemStorage implements IStorage {
       hints: ["Try shifting each letter back by 3 positions"],
       difficulty: "Easy",
       points: 75,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "ctf",
+      title: "Base64 Decoding Challenge",
+      description: "Decode the following Base64 encoded message: 'Q3liZXJTZWN1cml0eQ=='",
+      flag: "CyberSecurity",
+      hints: ["This looks like Base64 encoding", "Use any online Base64 decoder or command line tools"],
+      difficulty: "Easy",
+      points: 80,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "ctf",
+      title: "SQL Injection Discovery",
+      description: "You found a login form that seems vulnerable. The query looks like: SELECT * FROM users WHERE username='$input' AND password='$pass'. What would you enter as username to bypass authentication?",
+      flag: "admin'--",
+      hints: ["Think about SQL comment syntax", "You want to make the password check irrelevant", "The double dash -- is used for comments in SQL"],
+      difficulty: "Medium",
+      points: 100,
       createdBy: "aditya"
     });
   }
