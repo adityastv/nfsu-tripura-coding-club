@@ -150,6 +150,12 @@ export class MemStorage implements IStorage {
       outputFormat: "Two space-separated integers representing the indices.",
       sampleInput: "4\n2 7 11 15\n9",
       sampleOutput: "0 1",
+      testCases: [
+        { input: "3\n3 2 4\n6", expectedOutput: "1 2", isHidden: true },
+        { input: "2\n3 3\n6", expectedOutput: "0 1", isHidden: true },
+        { input: "5\n1 2 3 4 5\n8", expectedOutput: "2 4", isHidden: true },
+        { input: "6\n-1 -2 -3 -4 -5 10\n-6", expectedOutput: "1 3", isHidden: true }
+      ],
       difficulty: "Easy",
       points: 50,
       timeLimit: 1000,
@@ -165,6 +171,12 @@ export class MemStorage implements IStorage {
       outputFormat: "Index of target element, or -1 if not found.",
       sampleInput: "5\n1 3 5 7 9\n5",
       sampleOutput: "2",
+      testCases: [
+        { input: "4\n1 2 3 4\n3", expectedOutput: "2", isHidden: true },
+        { input: "3\n10 20 30\n15", expectedOutput: "-1", isHidden: true },
+        { input: "6\n2 4 6 8 10 12\n10", expectedOutput: "4", isHidden: true },
+        { input: "1\n5\n5", expectedOutput: "0", isHidden: true }
+      ],
       difficulty: "Medium", 
       points: 100,
       timeLimit: 2000,
@@ -180,6 +192,12 @@ export class MemStorage implements IStorage {
       outputFormat: "Print the values of the reversed linked list separated by spaces.",
       sampleInput: "5\n1 2 3 4 5",
       sampleOutput: "5 4 3 2 1",
+      testCases: [
+        { input: "3\n1 2 3", expectedOutput: "3 2 1", isHidden: true },
+        { input: "1\n42", expectedOutput: "42", isHidden: true },
+        { input: "4\n10 20 30 40", expectedOutput: "40 30 20 10", isHidden: true },
+        { input: "6\n1 1 2 3 5 8", expectedOutput: "8 5 3 2 1 1", isHidden: true }
+      ],
       difficulty: "Medium",
       points: 120,
       timeLimit: 1500,
@@ -195,6 +213,13 @@ export class MemStorage implements IStorage {
       outputFormat: "The nth Fibonacci number.",
       sampleInput: "10",
       sampleOutput: "55",
+      testCases: [
+        { input: "0", expectedOutput: "0", isHidden: true },
+        { input: "1", expectedOutput: "1", isHidden: true },
+        { input: "5", expectedOutput: "5", isHidden: true },
+        { input: "15", expectedOutput: "610", isHidden: true },
+        { input: "20", expectedOutput: "6765", isHidden: true }
+      ],
       difficulty: "Hard",
       points: 150,
       timeLimit: 1000,

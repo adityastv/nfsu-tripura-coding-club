@@ -167,9 +167,9 @@ export default function CodeEditor({ question }: CodeEditorProps) {
       isCorrect = ctfFlag.trim().toLowerCase() === ctfQ.flag.trim().toLowerCase();
     } else if (question.type === "coding") {
       answer = code;
-      // For demo purposes, we'll consider it correct if code contains certain keywords
-      // In a real implementation, this would run the code against test cases
-      isCorrect = code.includes("return") || code.includes("print") || code.includes("cout");
+      // Run the code against all test cases to determine if it's correct
+      // This will be handled server-side during submission
+      isCorrect = false; // Will be determined by server after running test cases
     }
 
     const submissionData = {
@@ -180,6 +180,8 @@ export default function CodeEditor({ question }: CodeEditorProps) {
       isCorrect,
       points: isCorrect ? question.points : 0,
       submittedAt: getISTTime(),
+      // Include language for coding questions
+      ...(question.type === "coding" && { language: selectedLanguage }),
     };
 
     submitMutation.mutate(submissionData);
