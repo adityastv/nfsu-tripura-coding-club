@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertSubmissionSchema, codeExecutionRequestSchema } from "@shared/schema";
 import { executeCode } from "./code-executor";
+import { validateSubmission } from "./test-runner";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -174,7 +175,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submission routes
   app.post("/api/submissions", async (req, res) => {
     try {
-      const submissionData = insertSubmissionSchema.parse(req.body);
+      let submissionData = insertSubmissionSchema.parse(req.body);
+      
+      // For coding questions, validate against test cases
+      if (submissionData.questionType === "coding") {
+        const question = await storage.getQuestion(submissionData.questionId);
+        if (!question || question.type !== "coding") {
+          return res.status(404).json({ message: "Question not found" });
+        }
+
+        // Extract language from the submission (we need to add this to the request)
+        // For now, let's assume Python as default, but this should be sent from client
+        const language = req.body.language || "python";
+        
+        try {
+          const validationResult = await validateSubmission(
+            submissionData.answer, 
+            language, 
+            question
+          );
+          
+          // Update submission data based on validation results
+          submissionData.isCorrect = validationResult.allPassed;
+          submissionData.points = validationResult.allPassed ? question.points : 0;
+          
+        } catch (validationError) {
+          console.error("Validation error:", validationError);
+          // If validation fails due to execution error, treat as incorrect
+          submissionData.isCorrect = false;
+          submissionData.points = 0;
+        }
+      }
+      
       const submission = await storage.createSubmission(submissionData);
       
       const user = await storage.getUser(submission.userId);
@@ -196,6 +228,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid submission data", errors: error.errors });
       } else {
+        console.error("Submission error:", error);
         res.status(500).json({ message: "Failed to create submission" });
       }
     }

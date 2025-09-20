@@ -40,6 +40,13 @@ export const mcqQuestionSchema = z.object({
   createdBy: z.string(),
 });
 
+// Test case schema for coding questions
+export const testCaseSchema = z.object({
+  input: z.string(),
+  expectedOutput: z.string(),
+  isHidden: z.boolean().default(false), // Hidden test cases are not shown to users
+});
+
 export const codingQuestionSchema = z.object({
   id: z.string(),
   type: z.literal("coding"),
@@ -49,6 +56,7 @@ export const codingQuestionSchema = z.object({
   outputFormat: z.string(),
   sampleInput: z.string(),
   sampleOutput: z.string(),
+  testCases: z.array(testCaseSchema).default([]), // Additional test cases
   difficulty: z.enum(["Easy", "Medium", "Hard"]),
   points: z.number(),
   timeLimit: z.number(),
@@ -76,6 +84,7 @@ export type MCQQuestion = z.infer<typeof mcqQuestionSchema>;
 export type CodingQuestion = z.infer<typeof codingQuestionSchema>;
 export type CTFQuestion = z.infer<typeof ctfQuestionSchema>;
 export type Question = z.infer<typeof questionSchema>;
+export type TestCase = z.infer<typeof testCaseSchema>;
 
 // Submission types
 export const submissionSchema = z.object({
