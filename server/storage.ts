@@ -1193,9 +1193,9 @@ export class MemStorage implements IStorage {
     await this.createQuestion({
       type: "ctf",
       title: "Simple Caesar Cipher",
-      description: "Decode the following Caesar cipher with shift 3: 'KDOOR ZRUOG'",
-      flag: "HELLO WORLD",
-      hints: ["Try shifting each letter back by 3 positions"],
+      description: "Decode the following Caesar cipher: 'KDOOR_ZRUOG'",
+      flag: "CTF{HELLO_WORLD}",
+      hints: ["Flag format - CTF{*****_*****}"],
       difficulty: "Easy",
       points: 75,
       createdBy: "aditya"
@@ -1206,7 +1206,7 @@ export class MemStorage implements IStorage {
       title: "QR Quest",
       description: "Can you find the right QR code and claim the treasure? - https://drive.google.com/drive/folders/1pNtW8mmlbgEz1iY_-9LcMI0r1xlsE6hS?usp=sharing",
       flag: "CTF{NFSU_QR_QUEST}",
-      hints: ["This looks like Base64 encoding", "Use any online Base64 decoder or command line tools"],
+      hints: ["NA"],
       difficulty: "Easy",
       points: 80,
       createdBy: "aditya"
@@ -1214,10 +1214,10 @@ export class MemStorage implements IStorage {
 
     await this.createQuestion({
       type: "ctf",
-      title: "SQL Injection Discovery",
-      description: "You found a login form that seems vulnerable. The query looks like: SELECT * FROM users WHERE username='$input' AND password='$pass'. What would you enter as username to bypass authentication?",
-      flag: "admin'--",
-      hints: ["Think about SQL comment syntax", "You want to make the password check irrelevant", "The double dash -- is used for comments in SQL"],
+      title: "The Disguised Truth",
+      description: " We received a suspicious image file — or is it? - https://drive.google.com/file/d/1fOJOUlopQVLVrBSlGEsq5XvW6wG7XJru/view?usp=sharing",
+      flag: "CTF{CodeCrafters_reads_between_extensions",
+      hints: ["Something doesn’t quite add up. Could it be a wolf in sheep’s clothing?"],
       difficulty: "Medium",
       points: 100,
       createdBy: "aditya"
