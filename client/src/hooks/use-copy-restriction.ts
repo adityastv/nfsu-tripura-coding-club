@@ -55,10 +55,6 @@ export function useGlobalCopyProtection() {
       // Prevent Ctrl+C, Ctrl+A, Ctrl+X (copy, select all, cut)
       if (e.ctrlKey || e.metaKey) {
         if (e.key === 'c' || e.key === 'C' || e.key === 'a' || e.key === 'A' || e.key === 'x' || e.key === 'X') {
-          // Allow paste operations (Ctrl+V) to work in input fields
-          if (e.key === 'v' || e.key === 'V') {
-            return;
-          }
           e.preventDefault();
           e.stopPropagation();
           return false;
