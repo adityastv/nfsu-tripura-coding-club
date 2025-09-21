@@ -49,7 +49,7 @@ export default function MCQForm({ editingQuestion, onCancel }: MCQFormProps) {
       optionD: editingQuestion?.options.d || "",
       correctAnswer: editingQuestion?.correctAnswer || "a",
       difficulty: editingQuestion?.difficulty || "Easy",
-      points: editingQuestion?.points || 10,
+      points: editingQuestion?.points || 5,
     },
   });
 
@@ -77,7 +77,7 @@ export default function MCQForm({ editingQuestion, onCancel }: MCQFormProps) {
         optionD: "",
         correctAnswer: "a",
         difficulty: "Easy",
-        points: 10,
+        points: 5,
       });
     }
   }, [editingQuestion, form]);
