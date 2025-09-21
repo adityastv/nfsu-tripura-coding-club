@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useScreenshotProtection } from './use-screenshot-protection';
 
 /**
  * Hook to restrict copy operations while allowing paste operations
@@ -49,11 +48,8 @@ export function useCopyRestriction() {
 /**
  * Hook to apply global copy protection across the entire webpage
  * Prevents text selection, copying, and right-click while preserving paste functionality
- * Also includes screenshot protection that blacks out the screen during screenshot attempts
  */
 export function useGlobalCopyProtection() {
-  // Enable screenshot protection
-  const isBlackoutActive = useScreenshotProtection();
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // Prevent Ctrl+C, Ctrl+A, Ctrl+X (copy, select all, cut)
@@ -142,7 +138,4 @@ export function useGlobalCopyProtection() {
       document.removeEventListener('selectstart', handleSelectStart, true);
     };
   }, []);
-
-  // Return blackout state for use in components
-  return { isBlackoutActive };
 }

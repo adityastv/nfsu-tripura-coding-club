@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useGlobalCopyProtection } from "@/hooks/use-copy-restriction";
-import { BlackoutOverlay } from "@/components/ui/blackout-overlay";
 import { auth } from "@/lib/auth";
 import Login from "@/pages/login";
 import AdminDashboard from "@/pages/admin-dashboard";
@@ -62,7 +61,7 @@ function AuthenticatedApp() {
 
 function App() {
   // Apply global copy protection across the entire application
-  const { isBlackoutActive } = useGlobalCopyProtection();
+  useGlobalCopyProtection();
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="nfsu-coding-club-theme">
@@ -70,7 +69,6 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <AuthenticatedApp />
-          <BlackoutOverlay isActive={isBlackoutActive} />
         </TooltipProvider>
       </QueryClientProvider>
     </ThemeProvider>
