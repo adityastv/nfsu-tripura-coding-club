@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UrlText } from "@/components/ui/url-text";
 import CodeOutput from "@/components/code-output";
 import { auth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -265,7 +266,7 @@ export default function CodeEditor({ question }: CodeEditorProps) {
         <div className="space-y-4">
           <div>
             <h4 className="font-semibold text-foreground mb-2">Challenge Description</h4>
-            <p className="text-sm text-foreground whitespace-pre-wrap">{ctfQ.description}</p>
+            <UrlText text={ctfQ.description} />
           </div>
           
           {ctfQ.hints && ctfQ.hints.length > 0 && (
