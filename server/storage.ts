@@ -1206,7 +1206,7 @@ export class MemStorage implements IStorage {
       title: "QR Quest",
       description: "Can you find the right QR code and claim the treasure? - https://drive.google.com/drive/folders/1pNtW8mmlbgEz1iY_-9LcMI0r1xlsE6hS?usp=sharing",
       flag: "CTF{NFSU_QR_QUEST}",
-      hints: ["NA"],
+      hints: ["Flag format - CTF{...}"],
       difficulty: "Easy",
       points: 80,
       createdBy: "aditya"
@@ -1217,7 +1217,7 @@ export class MemStorage implements IStorage {
       title: "The Disguised Truth",
       description: " We received a suspicious image file — or is it? - https://drive.google.com/file/d/1fOJOUlopQVLVrBSlGEsq5XvW6wG7XJru/view?usp=sharing",
       flag: "CTF{CodeCrafters_reads_between_extensions",
-      hints: ["Something doesn’t quite add up. Could it be a wolf in sheep’s clothing?"],
+      hints: ["Something doesn’t quite add up. Could it be a wolf in sheep’s clothing? Flag format - CTF{...}"],
       difficulty: "Medium",
       points: 100,
       createdBy: "aditya"
