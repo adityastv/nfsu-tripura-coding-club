@@ -74,7 +74,7 @@ export class MemStorage implements IStorage {
       },
       correctAnswer: "d",
       difficulty: "Easy",
-      points: 30,
+      points: 5,
       createdBy: "aditya"
     });
 
@@ -90,7 +90,7 @@ export class MemStorage implements IStorage {
       },
       correctAnswer: "b",
       difficulty: "Medium",
-      points: 40,
+      points: 5,
       createdBy: "aditya"
     });
 
@@ -106,7 +106,7 @@ export class MemStorage implements IStorage {
       },
       correctAnswer: "c",
       difficulty: "Easy",
-      points: 35,
+      points: 5,
       createdBy: "aditya"
     });
 
@@ -122,7 +122,7 @@ export class MemStorage implements IStorage {
       },
       correctAnswer: "d",
       difficulty: "Medium",
-      points: 45,
+      points: 5,
       createdBy: "aditya"
     });
 
@@ -138,7 +138,760 @@ export class MemStorage implements IStorage {
       },
       correctAnswer: "b",
       difficulty: "Easy",
-      points: 30,
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    // Additional MCQ Questions for 2nd Year BTech Level (45 new questions)
+    await this.createQuestion({
+      type: "mcq",
+      title: "Object-Oriented Programming",
+      description: "Which of the following is NOT a principle of Object-Oriented Programming?",
+      options: {
+        a: "Encapsulation",
+        b: "Inheritance",
+        c: "Compilation",
+        d: "Polymorphism"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Data Structures - Stack",
+      description: "Which of the following operations is NOT typically performed on a stack?",
+      options: {
+        a: "Push",
+        b: "Pop",
+        c: "Peek",
+        d: "Insert at middle"
+      },
+      correctAnswer: "d",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "SQL Queries",
+      description: "Which SQL command is used to retrieve data from a database?",
+      options: {
+        a: "INSERT",
+        b: "UPDATE",
+        c: "SELECT",
+        d: "DELETE"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Operating Systems",
+      description: "What is the main purpose of an operating system?",
+      options: {
+        a: "To run applications",
+        b: "To manage hardware resources",
+        c: "To provide user interface",
+        d: "All of the above"
+      },
+      correctAnswer: "d",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Computer Networks",
+      description: "Which layer of the OSI model is responsible for routing?",
+      options: {
+        a: "Physical Layer",
+        b: "Data Link Layer",
+        c: "Network Layer",
+        d: "Transport Layer"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Programming Languages",
+      description: "Which of the following is a compiled programming language?",
+      options: {
+        a: "Python",
+        b: "JavaScript",
+        c: "C++",
+        d: "PHP"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Data Structures - Queue",
+      description: "What is the time complexity of enqueue operation in a queue?",
+      options: {
+        a: "O(1)",
+        b: "O(n)",
+        c: "O(log n)",
+        d: "O(n²)"
+      },
+      correctAnswer: "a",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Software Engineering",
+      description: "Which software development model follows a linear sequential approach?",
+      options: {
+        a: "Agile Model",
+        b: "Waterfall Model",
+        c: "Spiral Model",
+        d: "Iterative Model"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Database Management",
+      description: "What does ACID stand for in database transactions?",
+      options: {
+        a: "Atomicity, Consistency, Isolation, Durability",
+        b: "Accuracy, Consistency, Integration, Design",
+        c: "Authentication, Consistency, Isolation, Deployment",
+        d: "Atomicity, Concurrency, Integration, Durability"
+      },
+      correctAnswer: "a",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Computer Architecture",
+      description: "What is the function of ALU in a processor?",
+      options: {
+        a: "Store data temporarily",
+        b: "Control program execution",
+        c: "Perform arithmetic and logical operations",
+        d: "Manage memory allocation"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Web Development",
+      description: "Which of the following is NOT a web development framework?",
+      options: {
+        a: "React",
+        b: "Angular",
+        c: "Django",
+        d: "Microsoft Word"
+      },
+      correctAnswer: "d",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Algorithms",
+      description: "Which sorting algorithm has the best average-case time complexity?",
+      options: {
+        a: "Bubble Sort",
+        b: "Selection Sort",
+        c: "Quick Sort",
+        d: "Insertion Sort"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Data Types",
+      description: "Which data type is used to store true/false values?",
+      options: {
+        a: "Integer",
+        b: "Float",
+        c: "Boolean",
+        d: "String"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Memory Management",
+      description: "What is memory leak in programming?",
+      options: {
+        a: "Using too much RAM",
+        b: "Forgetting to free allocated memory",
+        c: "Corrupted memory",
+        d: "Slow memory access"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Binary Trees",
+      description: "In a binary search tree, what is the maximum number of children a node can have?",
+      options: {
+        a: "1",
+        b: "2",
+        c: "3",
+        d: "4"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Network Protocols",
+      description: "Which protocol is used for secure file transfer?",
+      options: {
+        a: "FTP",
+        b: "HTTP",
+        c: "SFTP",
+        d: "SMTP"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Programming Concepts",
+      description: "What is recursion in programming?",
+      options: {
+        a: "A loop that never ends",
+        b: "A function calling itself",
+        c: "A variable declaration",
+        d: "A type of array"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Version Control",
+      description: "Which command is used to create a new branch in Git?",
+      options: {
+        a: "git new",
+        b: "git branch",
+        c: "git create",
+        d: "git checkout -b"
+      },
+      correctAnswer: "d",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Complexity Analysis",
+      description: "What is the space complexity of merge sort?",
+      options: {
+        a: "O(1)",
+        b: "O(log n)",
+        c: "O(n)",
+        d: "O(n²)"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Java Programming",
+      description: "Which keyword is used to inherit a class in Java?",
+      options: {
+        a: "inherits",
+        b: "extends",
+        c: "implements",
+        d: "super"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Database Normalization",
+      description: "What is the purpose of normalization in databases?",
+      options: {
+        a: "To increase data redundancy",
+        b: "To reduce data redundancy",
+        c: "To slow down queries",
+        d: "To increase storage space"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Linked Lists",
+      description: "What is the advantage of linked lists over arrays?",
+      options: {
+        a: "Faster access time",
+        b: "Less memory usage",
+        c: "Dynamic size",
+        d: "Better cache performance"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Software Testing",
+      description: "Which type of testing is performed by end users?",
+      options: {
+        a: "Unit Testing",
+        b: "Integration Testing",
+        c: "System Testing",
+        d: "Acceptance Testing"
+      },
+      correctAnswer: "d",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Computer Graphics",
+      description: "What does RGB stand for in computer graphics?",
+      options: {
+        a: "Red, Green, Blue",
+        b: "Red, Gray, Black",
+        c: "Right, Green, Bottom",
+        d: "Random, Generated, Bitmap"
+      },
+      correctAnswer: "a",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Machine Learning",
+      description: "Which of the following is a supervised learning algorithm?",
+      options: {
+        a: "K-means clustering",
+        b: "Linear regression",
+        c: "DBSCAN",
+        d: "Principal Component Analysis"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Digital Logic",
+      description: "How many input combinations are possible for a 3-input logic gate?",
+      options: {
+        a: "3",
+        b: "6",
+        c: "8",
+        d: "9"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "HTTP Methods",
+      description: "Which HTTP method is used to update existing data?",
+      options: {
+        a: "GET",
+        b: "POST",
+        c: "PUT",
+        d: "DELETE"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Compiler Design",
+      description: "Which phase of compilation converts source code into tokens?",
+      options: {
+        a: "Syntax Analysis",
+        b: "Lexical Analysis",
+        c: "Semantic Analysis",
+        d: "Code Generation"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Hashing",
+      description: "What is the average time complexity of search operation in a hash table?",
+      options: {
+        a: "O(1)",
+        b: "O(log n)",
+        c: "O(n)",
+        d: "O(n²)"
+      },
+      correctAnswer: "a",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "CSS Styling",
+      description: "Which CSS property is used to change the text color?",
+      options: {
+        a: "text-color",
+        b: "font-color",
+        c: "color",
+        d: "background-color"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Process Scheduling",
+      description: "Which scheduling algorithm gives the shortest average waiting time?",
+      options: {
+        a: "FCFS",
+        b: "SJF",
+        c: "Round Robin",
+        d: "Priority Scheduling"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Exception Handling",
+      description: "Which block is used to handle exceptions in Java?",
+      options: {
+        a: "try-catch",
+        b: "if-else",
+        c: "switch-case",
+        d: "for-loop"
+      },
+      correctAnswer: "a",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Graph Algorithms",
+      description: "Which algorithm is used to find the shortest path in a weighted graph?",
+      options: {
+        a: "BFS",
+        b: "DFS",
+        c: "Dijkstra's Algorithm",
+        d: "Kruskal's Algorithm"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "File Systems",
+      description: "What is the purpose of a file system?",
+      options: {
+        a: "To manage network connections",
+        b: "To organize and store files",
+        c: "To execute programs",
+        d: "To manage user accounts"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Encryption",
+      description: "Which type of encryption uses the same key for both encryption and decryption?",
+      options: {
+        a: "Asymmetric encryption",
+        b: "Public key encryption",
+        c: "Symmetric encryption",
+        d: "Hash encryption"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Regular Expressions",
+      description: "Which character is used to match any single character in regex?",
+      options: {
+        a: "*",
+        b: "?",
+        c: ".",
+        d: "+"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Cloud Computing",
+      description: "Which of the following is a cloud service model?",
+      options: {
+        a: "SaaS",
+        b: "PaaS",
+        c: "IaaS",
+        d: "All of the above"
+      },
+      correctAnswer: "d",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Multithreading",
+      description: "What is a race condition in multithreading?",
+      options: {
+        a: "When threads run too fast",
+        b: "When multiple threads access shared data simultaneously",
+        c: "When a thread finishes execution",
+        d: "When threads communicate with each other"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Data Mining",
+      description: "Which technique is used to find patterns in large datasets?",
+      options: {
+        a: "Data Mining",
+        b: "Data Entry",
+        c: "Data Deletion",
+        d: "Data Backup"
+      },
+      correctAnswer: "a",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "API Development",
+      description: "What does REST stand for in web services?",
+      options: {
+        a: "Representational State Transfer",
+        b: "Remote State Transfer",
+        c: "Relational State Transfer",
+        d: "Rapid State Transfer"
+      },
+      correctAnswer: "a",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "NoSQL Databases",
+      description: "Which of the following is a NoSQL database?",
+      options: {
+        a: "MySQL",
+        b: "PostgreSQL",
+        c: "MongoDB",
+        d: "Oracle"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Dynamic Programming",
+      description: "Which principle is used in dynamic programming?",
+      options: {
+        a: "Divide and Conquer",
+        b: "Greedy Approach",
+        c: "Optimal Substructure",
+        d: "Brute Force"
+      },
+      correctAnswer: "c",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Mobile Development",
+      description: "Which programming language is primarily used for Android app development?",
+      options: {
+        a: "Swift",
+        b: "Objective-C",
+        c: "Java/Kotlin",
+        d: "C#"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Blockchain Technology",
+      description: "What is a block in blockchain?",
+      options: {
+        a: "A programming construct",
+        b: "A data structure containing transactions",
+        c: "A type of cryptocurrency",
+        d: "A network protocol"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Agile Methodology",
+      description: "What is the typical duration of a sprint in Scrum?",
+      options: {
+        a: "1 day",
+        b: "1 week",
+        c: "2-4 weeks",
+        d: "6 months"
+      },
+      correctAnswer: "c",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Internet of Things",
+      description: "What does IoT stand for?",
+      options: {
+        a: "Internet of Things",
+        b: "International of Technology",
+        c: "Integration of Tools",
+        d: "Interface of Techniques"
+      },
+      correctAnswer: "a",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Computer Vision",
+      description: "Which technique is commonly used for image recognition?",
+      options: {
+        a: "Linear Regression",
+        b: "Convolutional Neural Networks",
+        c: "Binary Search",
+        d: "Bubble Sort"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
       createdBy: "aditya"
     });
 
@@ -428,7 +1181,7 @@ export class MemStorage implements IStorage {
         { input: "AGGTAB\nGXTXAYB", expectedOutput: "4", isHidden: true },
         { input: "ABC\nDEF", expectedOutput: "0", isHidden: true },
         { input: "HELLO\nHELLO", expectedOutput: "5", isHidden: true },
-        { input: "PROGRAMMING\nCODING", expectedOutput: "5", isHidden: true }
+        { input: "PROGRAMMING\nCODING", expectedOutput: "4", isHidden: true }
       ],
       difficulty: "Hard",
       points: 100,
