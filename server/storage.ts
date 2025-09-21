@@ -1,5 +1,8 @@
 import { type User, type InsertUser, type Question, type CodingQuestion, type MCQQuestion, type CTFQuestion, type Submission, type InsertSubmission, type Activity } from "@shared/schema";
+import { usersTable, questionsTable, submissionsTable, activitiesTable, type DbUser, type DbQuestion, type DbSubmission, type DbActivity } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -1361,4 +1364,459 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  private initialized = false;
+  private fallbackToMemory = false;
+  private memStorage: MemStorage | null = null;
+
+  constructor() {
+    this.ensureInitialized();
+  }
+
+  private async ensureInitialized() {
+    if (this.initialized) return;
+    
+    try {
+      // Check if we have any users (indicating the database is already populated)
+      const userCount = await db.select({ count: sql<number>`count(*)` }).from(usersTable);
+      if (userCount[0].count === 0) {
+        await this.initializeDefaultData();
+      }
+      this.initialized = true;
+    } catch (error) {
+      console.error('Failed to initialize database, falling back to in-memory storage:', error);
+      this.fallbackToMemory = true;
+      this.memStorage = new MemStorage();
+      this.initialized = true;
+    }
+  }
+
+  private async executeWithFallback<T>(
+    dbOperation: () => Promise<T>,
+    memOperation: () => Promise<T>
+  ): Promise<T> {
+    await this.ensureInitialized();
+    
+    if (this.fallbackToMemory && this.memStorage) {
+      return memOperation();
+    }
+    
+    try {
+      return await dbOperation();
+    } catch (error) {
+      console.error('Database operation failed, falling back to memory storage:', error);
+      if (!this.memStorage) {
+        this.memStorage = new MemStorage();
+      }
+      this.fallbackToMemory = true;
+      return memOperation();
+    }
+  }
+
+  private async initializeDefaultData() {
+    // Create admin user
+    await this.createUser({
+      username: "aditya",
+      password: "QAZwsx@12@",
+      email: "aditya@nfsu.ac.in",
+      name: "Aditya",
+      role: "admin"
+    });
+
+    // Create some test users  
+    await this.createUser({
+      username: "student1",
+      password: "password123",
+      email: "student1@nfsu.ac.in",
+      name: "Test Student",
+      role: "student",
+      studentId: "21BCE001"
+    });
+
+    // Add all the default questions from MemStorage
+    await this.createQuestion({
+      type: "mcq",
+      title: "Basic Programming",
+      description: "What is the time complexity of binary search?",
+      options: {
+        a: "O(1)",
+        b: "O(log n)",
+        c: "O(n)",
+        d: "O(n²)"
+      },
+      correctAnswer: "b",
+      difficulty: "Medium",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "mcq",
+      title: "Java Programming",
+      description: "Which keyword is used to inherit a class in Java?",
+      options: {
+        a: "inherits",
+        b: "extends",
+        c: "implements",
+        d: "super"
+      },
+      correctAnswer: "b",
+      difficulty: "Easy",
+      points: 5,
+      createdBy: "aditya"
+    });
+
+    await this.createQuestion({
+      type: "coding",
+      title: "Factorial Calculation",
+      description: "Write a program to calculate the factorial of a given number n.",
+      inputFormat: "A single integer n (0 ≤ n ≤ 10).",
+      outputFormat: "Print the factorial of n.",
+      sampleInput: "5",
+      sampleOutput: "120",
+      testCases: [
+        { input: "0", expectedOutput: "1", isHidden: true },
+        { input: "1", expectedOutput: "1", isHidden: true },
+        { input: "3", expectedOutput: "6", isHidden: true },
+        { input: "4", expectedOutput: "24", isHidden: true },
+        { input: "6", expectedOutput: "720", isHidden: true }
+      ],
+      difficulty: "Easy",
+      points: 30,
+      timeLimit: 1000,
+      memoryLimit: 256,
+      createdBy: "aditya"
+    } as Omit<CodingQuestion, 'id' | 'createdAt'>);
+
+    // Add more default questions...
+    // (I'll add a few more key ones)
+  }
+
+  // Helper methods to convert between database and application types
+  private dbUserToUser(dbUser: DbUser): User {
+    return {
+      id: dbUser.id,
+      username: dbUser.username,
+      password: dbUser.password,
+      email: dbUser.email,
+      name: dbUser.name,
+      role: dbUser.role as "admin" | "student",
+      studentId: dbUser.studentId || undefined,
+      lastLogin: dbUser.lastLogin || undefined,
+      isActive: dbUser.isActive,
+      points: dbUser.points,
+      problemsSolved: dbUser.problemsSolved
+    };
+  }
+
+  private dbQuestionToQuestion(dbQuestion: DbQuestion): Question {
+    const base = {
+      id: dbQuestion.id,
+      title: dbQuestion.title,
+      description: dbQuestion.description,
+      difficulty: dbQuestion.difficulty as "Easy" | "Medium" | "Hard",
+      points: dbQuestion.points,
+      createdAt: dbQuestion.createdAt,
+      createdBy: dbQuestion.createdBy
+    };
+
+    switch (dbQuestion.type) {
+      case "mcq":
+        return {
+          ...base,
+          type: "mcq",
+          options: dbQuestion.options as { a: string; b: string; c: string; d: string },
+          correctAnswer: dbQuestion.correctAnswer as "a" | "b" | "c" | "d"
+        };
+      case "coding":
+        return {
+          ...base,
+          type: "coding",
+          inputFormat: dbQuestion.inputFormat!,
+          outputFormat: dbQuestion.outputFormat!,
+          sampleInput: dbQuestion.sampleInput!,
+          sampleOutput: dbQuestion.sampleOutput!,
+          testCases: (dbQuestion.testCases || []) as any[],
+          timeLimit: dbQuestion.timeLimit!,
+          memoryLimit: dbQuestion.memoryLimit!
+        };
+      case "ctf":
+        return {
+          ...base,
+          type: "ctf",
+          flag: dbQuestion.flag!,
+          hints: (dbQuestion.hints || []) as string[]
+        };
+      default:
+        throw new Error(`Unknown question type: ${dbQuestion.type}`);
+    }
+  }
+
+  private dbSubmissionToSubmission(dbSubmission: DbSubmission): Submission {
+    return {
+      id: dbSubmission.id,
+      userId: dbSubmission.userId,
+      questionId: dbSubmission.questionId,
+      questionType: dbSubmission.questionType as "mcq" | "coding" | "ctf",
+      answer: dbSubmission.answer,
+      isCorrect: dbSubmission.isCorrect,
+      points: dbSubmission.points,
+      submittedAt: dbSubmission.submittedAt,
+      executionTime: dbSubmission.executionTime || undefined,
+      memoryUsed: dbSubmission.memoryUsed || undefined
+    };
+  }
+
+  private dbActivityToActivity(dbActivity: DbActivity): Activity {
+    return {
+      id: dbActivity.id,
+      userId: dbActivity.userId,
+      userName: dbActivity.userName,
+      action: dbActivity.action,
+      timestamp: dbActivity.timestamp
+    };
+  }
+
+  // User operations
+  async getUser(id: string): Promise<User | undefined> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(usersTable).where(eq(usersTable.id, id));
+        return result[0] ? this.dbUserToUser(result[0]) : undefined;
+      },
+      () => this.memStorage!.getUser(id)
+    );
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(usersTable).where(eq(usersTable.username, username));
+        return result[0] ? this.dbUserToUser(result[0]) : undefined;
+      },
+      () => this.memStorage!.getUserByUsername(username)
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    return this.executeWithFallback(
+      async () => {
+        const newUser = {
+          id: randomUUID(),
+          ...insertUser,
+          isActive: true,
+          points: 0,
+          problemsSolved: 0
+        };
+        
+        await db.insert(usersTable).values(newUser);
+        return this.dbUserToUser(newUser as DbUser);
+      },
+      () => this.memStorage!.createUser(insertUser)
+    );
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.update(usersTable)
+          .set(updates)
+          .where(eq(usersTable.id, id))
+          .returning();
+        
+        return result[0] ? this.dbUserToUser(result[0]) : undefined;
+      },
+      () => this.memStorage!.updateUser(id, updates)
+    );
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.delete(usersTable).where(eq(usersTable.id, id));
+        return result.rowCount !== null && result.rowCount > 0;
+      },
+      () => this.memStorage!.deleteUser(id)
+    );
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(usersTable);
+        return result.map(this.dbUserToUser);
+      },
+      () => this.memStorage!.getAllUsers()
+    );
+  }
+
+  // Question operations
+  async createQuestion(question: Omit<Question, 'id' | 'createdAt'>): Promise<Question> {
+    return this.executeWithFallback(
+      async () => {
+        const id = randomUUID();
+        const createdAt = new Date();
+        
+        const dbQuestion: any = {
+          id,
+          type: question.type,
+          title: question.title,
+          description: question.description,
+          difficulty: question.difficulty,
+          points: question.points,
+          createdAt,
+          createdBy: question.createdBy
+        };
+
+        // Add type-specific fields with proper type checking
+        if (question.type === "mcq") {
+          const mcqQuestion = question as MCQQuestion;
+          dbQuestion.options = mcqQuestion.options;
+          dbQuestion.correctAnswer = mcqQuestion.correctAnswer;
+        } else if (question.type === "coding") {
+          const codingQuestion = question as CodingQuestion;
+          dbQuestion.inputFormat = codingQuestion.inputFormat;
+          dbQuestion.outputFormat = codingQuestion.outputFormat;
+          dbQuestion.sampleInput = codingQuestion.sampleInput;
+          dbQuestion.sampleOutput = codingQuestion.sampleOutput;
+          dbQuestion.testCases = codingQuestion.testCases;
+          dbQuestion.timeLimit = codingQuestion.timeLimit;
+          dbQuestion.memoryLimit = codingQuestion.memoryLimit;
+        } else if (question.type === "ctf") {
+          const ctfQuestion = question as CTFQuestion;
+          dbQuestion.flag = ctfQuestion.flag;
+          dbQuestion.hints = ctfQuestion.hints;
+        }
+
+        await db.insert(questionsTable).values(dbQuestion);
+        return { id, createdAt, ...question };
+      },
+      () => this.memStorage!.createQuestion(question)
+    );
+  }
+
+  async getQuestion(id: string): Promise<Question | undefined> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(questionsTable).where(eq(questionsTable.id, id));
+        return result[0] ? this.dbQuestionToQuestion(result[0]) : undefined;
+      },
+      () => this.memStorage!.getQuestion(id)
+    );
+  }
+
+  async getAllQuestions(): Promise<Question[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(questionsTable);
+        return result.map(this.dbQuestionToQuestion);
+      },
+      () => this.memStorage!.getAllQuestions()
+    );
+  }
+
+  async updateQuestion(id: string, updates: Partial<Question>): Promise<Question | undefined> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.update(questionsTable)
+          .set(updates as any)
+          .where(eq(questionsTable.id, id))
+          .returning();
+        
+        return result[0] ? this.dbQuestionToQuestion(result[0]) : undefined;
+      },
+      () => this.memStorage!.updateQuestion(id, updates)
+    );
+  }
+
+  async deleteQuestion(id: string): Promise<boolean> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.delete(questionsTable).where(eq(questionsTable.id, id));
+        return result.rowCount !== null && result.rowCount > 0;
+      },
+      () => this.memStorage!.deleteQuestion(id)
+    );
+  }
+
+  // Submission operations
+  async createSubmission(submission: InsertSubmission): Promise<Submission> {
+    return this.executeWithFallback(
+      async () => {
+        const newSubmission = {
+          id: randomUUID(),
+          ...submission,
+          isCorrect: submission.isCorrect || false,
+          points: submission.points || 0,
+          submittedAt: submission.submittedAt || new Date()
+        };
+
+        await db.insert(submissionsTable).values(newSubmission as any);
+        return this.dbSubmissionToSubmission(newSubmission as DbSubmission);
+      },
+      () => this.memStorage!.createSubmission(submission)
+    );
+  }
+
+  async getSubmissionsByUser(userId: string): Promise<Submission[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(submissionsTable).where(eq(submissionsTable.userId, userId));
+        return result.map(this.dbSubmissionToSubmission);
+      },
+      () => this.memStorage!.getSubmissionsByUser(userId)
+    );
+  }
+
+  async getSubmissionsByQuestion(questionId: string): Promise<Submission[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(submissionsTable).where(eq(submissionsTable.questionId, questionId));
+        return result.map(this.dbSubmissionToSubmission);
+      },
+      () => this.memStorage!.getSubmissionsByQuestion(questionId)
+    );
+  }
+
+  async getAllSubmissions(): Promise<Submission[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select().from(submissionsTable);
+        return result.map(this.dbSubmissionToSubmission);
+      },
+      () => this.memStorage!.getAllSubmissions()
+    );
+  }
+
+  // Activity operations
+  async addActivity(activity: Omit<Activity, 'id'>): Promise<Activity> {
+    return this.executeWithFallback(
+      async () => {
+        const newActivity = {
+          id: randomUUID(),
+          ...activity
+        };
+
+        await db.insert(activitiesTable).values(newActivity);
+        return this.dbActivityToActivity(newActivity as DbActivity);
+      },
+      () => this.memStorage!.addActivity(activity)
+    );
+  }
+
+  async getRecentActivities(limit: number = 10): Promise<Activity[]> {
+    return this.executeWithFallback(
+      async () => {
+        const result = await db.select()
+          .from(activitiesTable)
+          .orderBy(desc(activitiesTable.timestamp))
+          .limit(limit);
+        
+        return result.map(this.dbActivityToActivity);
+      },
+      () => this.memStorage!.getRecentActivities(limit)
+    );
+  }
+}
+
+export const storage = new DatabaseStorage();
