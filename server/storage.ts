@@ -1203,9 +1203,9 @@ export class MemStorage implements IStorage {
 
     await this.createQuestion({
       type: "ctf",
-      title: "Base64 Decoding Challenge",
-      description: "Decode the following Base64 encoded message: 'Q3liZXJTZWN1cml0eQ=='",
-      flag: "CyberSecurity",
+      title: "QR Quest",
+      description: "Can you find the right QR code and claim the treasure? - https://drive.google.com/drive/folders/1pNtW8mmlbgEz1iY_-9LcMI0r1xlsE6hS?usp=sharing",
+      flag: "CTF{NFSU_QR_QUEST}",
       hints: ["This looks like Base64 encoding", "Use any online Base64 decoder or command line tools"],
       difficulty: "Easy",
       points: 80,
