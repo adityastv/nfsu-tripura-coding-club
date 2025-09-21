@@ -217,6 +217,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(submission.userId);
       const question = await storage.getQuestion(submission.questionId);
       
+      // Update user stats if the submission is correct
+      if (user && question && submission.isCorrect) {
+        // Check if this is the first time the user solved this problem
+        const userSubmissions = await storage.getSubmissionsByUser(user.id);
+        const previousCorrectSubmission = userSubmissions.find(
+          sub => sub.questionId === question.id && sub.isCorrect && sub.id !== submission.id
+        );
+        
+        // Only update stats if this is the first time solving this problem
+        if (!previousCorrectSubmission) {
+          await storage.updateUser(user.id, {
+            problemsSolved: user.problemsSolved + 1,
+            points: user.points + submission.points
+          });
+        }
+      }
+      
       if (user && question) {
         await storage.addActivity({
           userId: user.id,
