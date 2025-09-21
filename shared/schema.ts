@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { pgTable, text, boolean, integer, timestamp, jsonb, uuid } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 // User types
 export const insertUserSchema = z.object({
@@ -146,3 +148,75 @@ export const codeExecutionResultSchema = z.object({
 
 export type CodeExecutionRequest = z.infer<typeof codeExecutionRequestSchema>;
 export type CodeExecutionResult = z.infer<typeof codeExecutionResultSchema>;
+
+// Drizzle Table Schemas
+export const usersTable = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  role: text("role", { enum: ["admin", "student"] }).notNull(),
+  studentId: text("student_id"),
+  lastLogin: timestamp("last_login"),
+  isActive: boolean("is_active").notNull().default(true),
+  points: integer("points").notNull().default(0),
+  problemsSolved: integer("problems_solved").notNull().default(0),
+});
+
+export const questionsTable = pgTable("questions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  type: text("type", { enum: ["mcq", "coding", "ctf"] }).notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  // MCQ specific fields
+  options: jsonb("options"), // For MCQ: {a: string, b: string, c: string, d: string}
+  correctAnswer: text("correct_answer"), // For MCQ: "a"|"b"|"c"|"d"
+  // Coding specific fields
+  inputFormat: text("input_format"),
+  outputFormat: text("output_format"),
+  sampleInput: text("sample_input"),
+  sampleOutput: text("sample_output"),
+  testCases: jsonb("test_cases"), // Array of TestCase objects
+  timeLimit: integer("time_limit"),
+  memoryLimit: integer("memory_limit"),
+  // CTF specific fields
+  flag: text("flag"),
+  hints: jsonb("hints"), // Array of strings
+  // Common fields
+  difficulty: text("difficulty", { enum: ["Easy", "Medium", "Hard"] }).notNull(),
+  points: integer("points").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdBy: text("created_by").notNull(),
+});
+
+export const submissionsTable = pgTable("submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => usersTable.id),
+  questionId: uuid("question_id").notNull().references(() => questionsTable.id),
+  questionType: text("question_type", { enum: ["mcq", "coding", "ctf"] }).notNull(),
+  answer: text("answer").notNull(),
+  isCorrect: boolean("is_correct").notNull(),
+  points: integer("points").notNull(),
+  submittedAt: timestamp("submitted_at").notNull().defaultNow(),
+  executionTime: integer("execution_time"), // in milliseconds
+  memoryUsed: integer("memory_used"), // in MB
+});
+
+export const activitiesTable = pgTable("activities", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull(), // Not foreign key to support system activities
+  userName: text("user_name").notNull(),
+  action: text("action").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+// Export types from Drizzle tables
+export type DbUser = typeof usersTable.$inferSelect;
+export type DbInsertUser = typeof usersTable.$inferInsert;
+export type DbQuestion = typeof questionsTable.$inferSelect;
+export type DbInsertQuestion = typeof questionsTable.$inferInsert;
+export type DbSubmission = typeof submissionsTable.$inferSelect;
+export type DbInsertSubmission = typeof submissionsTable.$inferInsert;
+export type DbActivity = typeof activitiesTable.$inferSelect;
+export type DbInsertActivity = typeof activitiesTable.$inferInsert;
