@@ -46,8 +46,8 @@ export function useCopyRestriction() {
 }
 
 /**
- * Hook to apply global copy protection across the entire webpage
- * Prevents text selection, copying, and right-click while preserving paste functionality
+ * Hook to apply global copy and screenshot protection across the entire webpage
+ * Prevents text selection, copying, right-click, and screenshot capture
  */
 export function useGlobalCopyProtection() {
   useEffect(() => {
@@ -77,6 +77,57 @@ export function useGlobalCopyProtection() {
       
       // Prevent Ctrl+U (View Source)
       if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Screenshot protection - prevent various screenshot combinations
+      
+      // Prevent Print Screen key
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Alt + Print Screen (active window screenshot)
+      if (e.altKey && e.key === 'PrintScreen') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Windows + Print Screen (Windows screenshot to file)
+      if ((e.metaKey || e.key === 'Meta') && e.key === 'PrintScreen') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Windows + Shift + S (Windows Snipping Tool)
+      if ((e.metaKey || e.key === 'Meta') && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Cmd + Shift + 3 (Mac full screenshot)
+      if (e.metaKey && e.shiftKey && e.key === '3') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Cmd + Shift + 4 (Mac area screenshot)
+      if (e.metaKey && e.shiftKey && e.key === '4') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      
+      // Prevent Cmd + Shift + 5 (Mac screenshot utility)
+      if (e.metaKey && e.shiftKey && e.key === '5') {
         e.preventDefault();
         e.stopPropagation();
         return false;
@@ -118,12 +169,48 @@ export function useGlobalCopyProtection() {
       return false;
     };
 
+    // Add visual protection when window loses focus (potential screenshot attempt)
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Add blur overlay when page is hidden
+        document.body.style.filter = 'blur(10px)';
+        document.body.style.pointerEvents = 'none';
+      } else {
+        // Remove blur overlay when page is visible
+        document.body.style.filter = 'none';
+        document.body.style.pointerEvents = 'auto';
+      }
+    };
+
+    const handleWindowBlur = () => {
+      // Temporarily blur content when window loses focus
+      document.body.style.filter = 'blur(10px)';
+      document.body.style.pointerEvents = 'none';
+    };
+
+    const handleWindowFocus = () => {
+      // Remove blur when window regains focus
+      document.body.style.filter = 'none';
+      document.body.style.pointerEvents = 'auto';
+    };
+
+    // Prevent drag and drop to avoid content extraction
+    const handleDragStart = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
     // Add global event listeners
     document.addEventListener('keydown', handleGlobalKeyDown, true);
     document.addEventListener('contextmenu', handleGlobalContextMenu, true);
     document.addEventListener('copy', handleGlobalCopy, true);
     document.addEventListener('cut', handleGlobalCut, true);
     document.addEventListener('selectstart', handleSelectStart, true);
+    document.addEventListener('dragstart', handleDragStart, true);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
 
     // Cleanup function
     return () => {
@@ -132,6 +219,14 @@ export function useGlobalCopyProtection() {
       document.removeEventListener('copy', handleGlobalCopy, true);
       document.removeEventListener('cut', handleGlobalCut, true);
       document.removeEventListener('selectstart', handleSelectStart, true);
+      document.removeEventListener('dragstart', handleDragStart, true);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleWindowBlur);
+      window.removeEventListener('focus', handleWindowFocus);
+      
+      // Clean up any remaining styles
+      document.body.style.filter = 'none';
+      document.body.style.pointerEvents = 'auto';
     };
   }, []);
 }

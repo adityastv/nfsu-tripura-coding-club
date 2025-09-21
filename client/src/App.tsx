@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Watermark } from "@/components/ui/watermark";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useGlobalCopyProtection } from "@/hooks/use-copy-restriction";
 import { auth } from "@/lib/auth";
@@ -29,6 +30,7 @@ function AuthenticatedApp() {
 
   return (
     <div className="min-h-screen flex bg-background">
+      <Watermark userId={user.username} />
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
@@ -60,13 +62,14 @@ function AuthenticatedApp() {
 }
 
 function App() {
-  // Apply global copy protection across the entire application
+  // Apply global copy and screenshot protection across the entire application
   useGlobalCopyProtection();
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="nfsu-coding-club-theme">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <Watermark />
           <Toaster />
           <AuthenticatedApp />
         </TooltipProvider>
